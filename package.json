@@ -1,0 +1,14 @@
+{
+  "name": "http-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "dev": "ts-node main.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^15.12.5"
+  }
+}
