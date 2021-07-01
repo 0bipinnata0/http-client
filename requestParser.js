@@ -108,7 +108,8 @@ class RequestParser extends Events {
         if(this._cache[1]<this._cache[0]){
             this._cache[2][this._cache[1]] = char
             this._cache[1]++
-        }else{
+        }
+        if(this._cache[0] === this._cache[1]){
             this._message.request.body= Buffer.from(this._cache[2])
             nextState = this._send_finish_event()
         }
@@ -117,6 +118,7 @@ class RequestParser extends Events {
 
     _send_finish_event(char) {
         // 完成之后触发events的时间通知
+        // 解析数据结束
         this.emit('finish', this._message)
         return this._end(char)
     }
