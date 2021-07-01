@@ -55,17 +55,53 @@ class RequestParser extends Events {
         return nextState
     }
 
+    /**
+     * buffer流参照ASCII
+     * token : content
+     * : 3A
+     * CR 0D
+     * LF 0A
+     */
     _read_head_line(char) {
+        let nextState = this._read_head_line
+        if (!this._cache) {
+            // [pointer, token ,content, CRLF]
+            this._cache = [1, '', '', false]
+        }
+        if (char === 0x3A) {
+            this._cache[0]++
+        } else if (char === 0x0D) {
+            this._cache[3] = true
+        } else if (char === 0x0A && this._cache[3]) {
+            if (this._cache[1]) {
+                this._message.request.headers.push({key: this._cache[1], value: this._cache[2]})
+            } else {
+                // token数组获取结束之后，应该是连续两个CRLF的情况，这个时候判断token是否为空，
+                // 则可以判断是否切换到下一个状态机
+                // 判断是否要读body
+                // 如果有content-length，则读，否则，return end
+                const {headers} = this._message.request
+                const contentLengthHeader = headers.find(({key}) => key === 'Content-Length')
+                if (contentLengthHeader && contentLengthHeader.value) {
+                    nextState = this._read_body
+                } else {
+                    nextState = this._send_finish_event()
+                }
+            }
+            this._cache = null
+        } else {
+            this._cache[this._cache[0]] += String.fromCharCode(char);
+        }
+        return nextState
     }
 
     _read_body(char) {
-
     }
 
     _send_finish_event(char) {
         // 完成之后触发events的时间通知
         this.emit('finish', this._message)
-        return this.end(char)
+        return this._end(char)
     }
 
     _end(char) {
