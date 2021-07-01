@@ -1,4 +1,5 @@
 const RequestParser = require("./requestParser");
+const makeResponse = require("./makeResponse");
 
 module.exports = (connection) => {
     const parser = new RequestParser()
@@ -16,6 +17,6 @@ module.exports = (connection) => {
         // plugin 0
         // ...
         // make response
-        // connection.end(response)
+        connection.end(makeResponse(message))
     })
 }
