@@ -96,6 +96,23 @@ class RequestParser extends Events {
     }
 
     _read_body(char) {
+        let nextState = this._read_body
+        const {headers} = this._message.request
+        const {value: contentLength} = headers.find(({key}) => key === 'Content-Length')
+        // Token: content CRLF
+        // 字节需要提前指定长度
+        // [content-length, bytes-read, content]
+        if (!this._cache) {
+            this._cache = [parseInt(contentLength), 0, new Uint8Array(contentLength)]
+        }
+        if(this._cache[1]<this._cache[0]){
+            this._cache[2][this._cache[1]] = char
+            this._cache[1]++
+        }else{
+            this._message.request.body= Buffer.from(this._cache[2])
+            nextState = this._send_finish_event()
+        }
+        return nextState
     }
 
     _send_finish_event(char) {
