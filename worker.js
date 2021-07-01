@@ -10,11 +10,12 @@ module.exports = (connection) => {
 
 
     // Request 是否完毕
+    // on 方法是继承自events类
     parser.on('finish', () => {
         // plugin 0
         // ...
         // make response
-        
+
         // connection.end(response)
     })
 }
