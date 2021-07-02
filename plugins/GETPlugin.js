@@ -1,9 +1,9 @@
 /**
  * get
  * path         不合法  403
- * path         不存在  404
- * path为目录    输出目录列表 200
- * path为文件    文件存在 200
+ * path         不存在  404       fs.existsSync
+ * path为目录    输出目录列表 200   fs.statSync   xx.isDirectory  fs.readdirSync
+ * path为文件    文件存在 200       xx.isFile   fs.readFileSync
  *              不存在 404
  */
 const path = require("path");
