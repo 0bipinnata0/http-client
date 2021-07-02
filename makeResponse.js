@@ -1,4 +1,6 @@
 const statusMap = {
+    201:'Created',
+    403: 'Forbidden',
     500: 'Internal Server Error',
 }
 /**
