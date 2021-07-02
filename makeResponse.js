@@ -2,6 +2,7 @@ const statusMap = {
     200: 'ok',
     201: 'Created',
     206: 'Partial Content', //服务器成功处理了部分GET请求，或者返回了请求资源的部分内容
+    401: 'Unauthorized',
     403: 'Forbidden',
     404: 'Not Found',
     500: 'Internal Server Error',
