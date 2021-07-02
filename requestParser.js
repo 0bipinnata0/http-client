@@ -123,7 +123,7 @@ class RequestParser extends Events {
         return this._end(char)
     }
 
-    _end(char) {
+    _end() {
         return this._end
     }
 }

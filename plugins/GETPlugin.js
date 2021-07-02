@@ -8,6 +8,7 @@
  */
 const path = require("path");
 const fs = require("fs");
+const utils = require("../utils");
 module.exports = function (message, env) {
     const {request, response} = message
     const {root} = env
@@ -61,11 +62,40 @@ module.exports = function (message, env) {
         return message
     }
 
+    // 是目录
     if (!requestPathStat.isFile()) {
         response.status = 403;
         return message
     }
 
+    // 是文件
+    // 打开关闭流 openSync closeSync
+    // 指定读取 readSync
+    // 打开部分的文件流
+    // response header 附上 Content-Range bytes a-b/size
+    const rangeHeader = utils.getHeader(request.headers, 'Range')
+    if (rangeHeader) {
+        // Range: bytes = 0 -  123
+        const matchedRange = rangeHeader.match(/bytes\s*=\s*(\d+)\s*-\s*(\d+)/i)
+        if (matchedRange) {
+            const content = Buffer.alloc(matchedRange[2] - matchedRange[1] + 1)
+            // fileDescription 文件描述符
+            // r 只读模式打开，用完后记得关闭
+            const fd = fs.openSync(requestPath, 'r')
+            fs.readSync(fd, content, 0, content.length, parseInt(matchedRange[1]))
+            // 释放文件
+            fs.closeSync(fd)
+            response.body = content
+            response.status = 206
+            utils.setHeader(
+                response.headers,
+                'Content-Range',
+                `bytes ${matchedRange[1]}-${matchedRange[2]}/${requestPathStat.size}`)
+            return message
+        }
+    }
+
+    // readFileSync 读取整个文件
     response.status = 200
     response.body = fs.readFileSync(requestPath)
     return message
