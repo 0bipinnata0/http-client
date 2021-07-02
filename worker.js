@@ -4,6 +4,7 @@ const path = require("path");
 const POSTPlugin = require('./plugins/POSTPlugin')
 const GETPlugin = require('./plugins/GETPlugin')
 const PUTPlugin = require('./plugins/PUTPlugin')
+const DELETEPlugin = require('./plugins/DELETEPlugin')
 
 module.exports = (connection) => {
     const parser = new RequestParser()
@@ -28,6 +29,7 @@ module.exports = (connection) => {
         message = POSTPlugin(message, env)
         message = GETPlugin(message, env)
         message = PUTPlugin(message, env)
+        message = DELETEPlugin(message, env)
         // message=GETPlugin(message,env)
         // ...
         // make response
