@@ -3,6 +3,7 @@ const makeResponse = require("./makeResponse");
 const path = require("path");
 const POSTPlugin = require('./plugins/POSTPlugin')
 const GETPlugin = require('./plugins/GETPlugin')
+const PUTPlugin = require('./plugins/PUTPlugin')
 
 module.exports = (connection) => {
     const parser = new RequestParser()
@@ -26,6 +27,7 @@ module.exports = (connection) => {
         // plugin 0
         message = POSTPlugin(message, env)
         message = GETPlugin(message, env)
+        message = PUTPlugin(message, env)
         // message=GETPlugin(message,env)
         // ...
         // make response
