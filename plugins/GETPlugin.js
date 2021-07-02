@@ -30,11 +30,7 @@ module.exports = function (message, env) {
     const requestPathStat = fs.statSync(requestPath)
 
 
-    if (requestPathStat.isFile()) {
-        response.status = 200
-        response.body = fs.readFileSync(requestPath)
-        return message
-    } else if (requestPathStat.isDirectory()) {
+    if (requestPathStat.isDirectory()) {
         let dirs = fs.readdirSync(requestPath);
         let contentHTML = dirs.map(item => {
             const itemPath = path.resolve(requestPath, item)
@@ -65,7 +61,12 @@ module.exports = function (message, env) {
         return message
     }
 
-    response.status = 403;
-    return message
+    if (!requestPathStat.isFile()) {
+        response.status = 403;
+        return message
+    }
 
+    response.status = 200
+    response.body = fs.readFileSync(requestPath)
+    return message
 }
