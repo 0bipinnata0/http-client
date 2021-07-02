@@ -5,13 +5,15 @@ const POSTPlugin = require('./plugins/POSTPlugin')
 const GETPlugin = require('./plugins/GETPlugin')
 const PUTPlugin = require('./plugins/PUTPlugin')
 const DELETEPlugin = require('./plugins/DELETEPlugin')
+const AUTHPlugin = require('./plugins/AUTHPlugin')
 
 module.exports = (connection) => {
     const parser = new RequestParser()
 
     const env = {
         // 转换成绝对路径
-        root: path.resolve('./resources')
+        root: path.resolve('./resources'),
+        session: path.resolve('./session')
     }
 
     // 判断缓冲区是否有数据
@@ -26,6 +28,10 @@ module.exports = (connection) => {
     // 文本解析结束，生成响应
     parser.on('finish', (message) => {
         // plugin 0
+        // 鉴权
+        message = AUTHPlugin(message, env)
+
+        // RESTful相关插件
         message = POSTPlugin(message, env)
         message = GETPlugin(message, env)
         message = PUTPlugin(message, env)

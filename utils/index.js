@@ -1,3 +1,12 @@
+function getHeaders(headers, ...keys) {
+    return keys.map(key => {
+        const target = findHeader(headers, key)
+        if (!target) return null
+        // 头部略去空格
+        return target.value.trim()
+    })
+}
+
 function getHeader(headers, key) {
     const target = findHeader(headers, key)
     if (!target) return null
@@ -21,5 +30,7 @@ function setHeader(headers, key, value) {
 }
 
 module.exports = {
-    getHeader, setHeader
+    getHeaders,
+    getHeader,
+    setHeader
 }
