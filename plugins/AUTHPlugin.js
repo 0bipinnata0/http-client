@@ -45,7 +45,7 @@ function checkAuthorization(message, session, authData) {
             const sessionID = 'session_' + new Date().getTime()
             const sessionPath = path.resolve(session, sessionID)
             fs.writeFileSync(sessionPath, username)
-            utils.setHeader(response.headers, 'Set-Cookie', `sessionid=${sessionID}`)
+            utils.setHeader(response.headers, 'Set-Cookie', `sessionid=${sessionID};max-age=3600`)
         } else {
             response.status = 401
             utils.setHeader(response.headers, 'WWW-Authenticate', 'Basic realm="login"');
