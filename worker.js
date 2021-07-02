@@ -2,6 +2,7 @@ const RequestParser = require("./requestParser");
 const makeResponse = require("./makeResponse");
 const path = require("path");
 const POSTPlugin = require('./plugins/POSTPlugin')
+const GETPlugin = require('./plugins/GETPlugin')
 
 module.exports = (connection) => {
     const parser = new RequestParser()
@@ -24,6 +25,7 @@ module.exports = (connection) => {
     parser.on('finish', (message) => {
         // plugin 0
         message = POSTPlugin(message, env)
+        message = GETPlugin(message, env)
         // message=GETPlugin(message,env)
         // ...
         // make response

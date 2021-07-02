@@ -1,6 +1,8 @@
 const statusMap = {
-    201:'Created',
+    200: 'ok',
+    201: 'Created',
     403: 'Forbidden',
+    404: 'Not Found',
     500: 'Internal Server Error',
 }
 /**
@@ -18,7 +20,7 @@ module.exports = (message) => {
     const statusLine = `${message.request.version} ${message.response.status} ${reasonPhrase}\r\n`
 
     // body长度，Content-length
-    message.response.headers.push({key: 'Content-length', value: message.request.body.length})
+    message.response.headers.push({key: 'Content-length', value: message.response.body.length})
 
     // 转成字符串
     let headerLines = message.response.headers.map(item => `${item.key}: ${item.value}\r\n`).join('')
